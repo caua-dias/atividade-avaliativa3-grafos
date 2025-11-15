@@ -1,4 +1,6 @@
-# caua
+from collections import deque
+
+#  caua
 def criar_grafo():
     return {}
 
@@ -128,6 +130,56 @@ def percurso_valido(grafo, caminho):
             return False
     return True
 
+#busca em largura da atividade 4
+def busca_em_largura(grafo, inicio, objetivo):
+
+    inicio = inicio.strip().upper()
+    objetivo = objetivo.strip().upper()
+
+    # Verificações de existência
+    if inicio not in grafo:
+        print(f"Erro: o vértice inicial '{inicio}' não existe no grafo.")
+        return None
+    if objetivo not in grafo:
+        print(f"Erro: o vértice objetivo '{objetivo}' não existe no grafo.")
+        return None
+
+    fila = deque([inicio])
+    visitados = set()
+    pais = {inicio: None}
+
+    print("\n=== INÍCIO DA BUSCA EM LARGURA (BFS) ===")
+    print(f"Fila inicial: {list(fila)}")
+    print(f"Visitados inicial: {list(visitados)}\n")
+
+    while fila:
+        nodo_atual = fila.popleft()
+        print(f"> Removendo da fila: {nodo_atual}")
+
+        if nodo_atual == objetivo:
+            print("\nObjetivo encontrado! Reconstruindo caminho...\n")
+            caminho = []
+            while nodo_atual is not None:
+                caminho.append(nodo_atual)
+                nodo_atual = pais[nodo_atual]
+            return caminho[::-1]
+
+        visitados.add(nodo_atual)
+
+        print(f"Vizinhos de {nodo_atual}: {grafo[nodo_atual]}")
+
+        for vizinho in grafo[nodo_atual]:
+            if vizinho not in visitados and vizinho not in fila:
+                fila.append(vizinho)
+                pais[vizinho] = nodo_atual
+                print(f" - {vizinho} adicionado à fila (pai = {nodo_atual})")
+
+        print(f"Fila atual: {list(fila)}")
+        print(f"Visitados: {list(visitados)}\n")
+
+    print("\nNenhum caminho encontrado entre os vértices informados.")
+    return None
+
 # lucas
 def main():
     grafo = criar_grafo()
@@ -144,6 +196,7 @@ def main():
         7 - Verificar se existe aresta
         8 - Exibir graus dos vértices
         9 - Verificar percurso válido
+        10 - Busca em Largura
         0 - Sair
         ======================
         """)
@@ -210,6 +263,18 @@ def main():
                 print("O percurso é válido.")
             else:
                 print("O percurso é inválido.")
+        
+        elif opcao == "10":
+            inicio = input("Digite o vértice inicial: ")
+            objetivo = input("Digite o vértice objetivo: ")
+
+            caminho = busca_em_largura(grafo, inicio, objetivo)
+
+            print("\n=== RESULTADO DA BUSCA EM LARGURA ===")
+            if caminho is None:
+                print("A busca não pôde ser realizada ou não encontrou caminho.")
+            else:
+                print("Caminho encontrado: ", " --> ".join(caminho))
 
         elif opcao == "0":
             print("Encerrando o programa...")
