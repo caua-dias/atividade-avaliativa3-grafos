@@ -180,6 +180,31 @@ def busca_em_largura(grafo, inicio, objetivo):
     print("\nNenhum caminho encontrado entre os vértices informados.")
     return None
 
+from collections import deque
+
+#menor caminho utilizando busca em largura da atividade 4
+def menor_caminho(grafo, inicio, destino):
+    inicio = inicio.strip().upper()
+    destino = destino.strip().upper()
+
+    if inicio not in grafo or destino not in grafo:
+        return None
+
+    fila = deque([(inicio, [inicio])])
+    visitados = set()
+
+    while fila:
+        vertice_atual, caminho = fila.popleft()
+
+        if vertice_atual == destino:
+            return caminho
+
+        visitados.add(vertice_atual)
+
+        for vizinho in grafo[vertice_atual]:
+            if vizinho not in visitados and all(vizinho != v for v, _ in fila):
+                fila.append((vizinho, caminho + [vizinho]))
+
 # lucas
 def main():
     grafo = criar_grafo()
@@ -197,6 +222,7 @@ def main():
         8 - Exibir graus dos vértices
         9 - Verificar percurso válido
         10 - Busca em Largura
+        11 - Buscar o menor caminho
         0 - Sair
         ======================
         """)
@@ -275,7 +301,18 @@ def main():
                 print("A busca não pôde ser realizada ou não encontrou caminho.")
             else:
                 print("Caminho encontrado: ", " --> ".join(caminho))
+        
 
+        elif opcao == "11":
+            inicio = input("Digite o vértice inicial: ")
+            destino = input("Digite o vértice destino: ")
+            caminho = menor_caminho(grafo, inicio, destino)
+            print("\n=== Menor caminho ===")
+            if caminho:
+                print("Menor caminho encontrado:", " -> ".join(caminho))
+            else:
+                print("Não existe caminho entre os vértices informados.")
+                
         elif opcao == "0":
             print("Encerrando o programa...")
             break
